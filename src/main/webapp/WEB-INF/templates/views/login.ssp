@@ -1,0 +1,22 @@
+<html>
+    <head>
+        <script src="https://code.jquery.com/jquery.js"></script>
+        <!-- Latest compiled and minified CSS -->
+        <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css">
+        <!-- Optional theme -->
+        <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap-theme.min.css">
+        <link rel="stylesheet" href="stylesheets/custom/signin.css">
+        <!-- Latest compiled and minified JavaScript -->
+        <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"></script>
+    </head>
+<body>
+    <div class="container">
+        <form class="form-signin" action="/session" method="post">
+            <h2 class="form-signin-heading">Please login into application</h2>
+            <input class="form-control" type="text" name="login" value="test"/>
+            <input class="form-control" type="password" name="password" value="testp"/>
+            <input class="btn btn-lg btn-primary btn-block" type="submit" value="Login"/>
+        </form>
+    </div>
+</body>
+</html>

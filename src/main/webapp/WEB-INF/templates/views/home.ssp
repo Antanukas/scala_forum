@@ -1,0 +1,23 @@
+<%@ val threads: scala.collection.immutable.List[com.home.firstapp.forum.domain.Topic] %>
+<% attributes("stylesheets_paths") = List("stylesheets/custom/home.css") %>
+<p>Homepage</p>
+<div>
+    <table class="table table-condensed forum-topics">
+        <thead>
+            <tr>
+                <th>Topic</th>
+                <th>User</th>
+                <th>Thread creation date</th>
+            </tr>
+        </thead>
+        <tbody>
+        #for (thread <- threads)
+            <tr>
+                <td>${thread.username}</td>
+                <td>${thread.topic}</td>
+                <td>${thread.postDate}</td>
+            </tr>
+        #end
+        </tbody>
+    </table>
+</div>

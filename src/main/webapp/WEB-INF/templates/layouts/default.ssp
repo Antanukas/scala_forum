@@ -1,0 +1,45 @@
+#import(com.home.firstapp.domain.User)
+#import(com.home.firstapp.Routes._)
+#import(scala.collection.immutable.List)
+<%@ var body: String %>
+<%@ var title: String = "" %>
+<%@ var head: String = "" %>
+<%@ val user: User %>
+<%@ var stylesheets_paths: List[String] = List()  %>
+<html>
+<head>
+    <title>${title}</title>
+
+    <%-- page specific head goes here --%>
+    ${unescape(head)}
+    <script src="https://code.jquery.com/jquery.js"></script>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css">
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap-theme.min.css">
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.0/js/bootstrap.min.js"></script>
+    #for (stylesheet_path <- stylesheets_paths)
+    <link rel="stylesheet" href="${stylesheet_path}">
+    #end
+</head>
+<body>
+<div class="navbar navbar-inverse navbar-fixed-top">
+    <div class="">
+        <ul class="nav navbar-nav">
+            <li><a href="<%=HOME%>">Home</a></li>
+        </ul>
+        <ul class="nav navbar-nav navbar-right">
+            <li class="navbar-right"><a href="#" onclick="$('#logout').submit();">Logout[${user.username}]</a></li>
+        </ul>
+    </div>
+    <form id="logout" style = "display: hidden;" action="<%=SESSION%>" method="post">
+        <input type="hidden" name="_method" value="delete">
+    </form>
+</div>
+
+${unescape(body)}
+
+<p>Footer</p>
+</body>
+</html>
