@@ -9,5 +9,5 @@ object Routes {
   val SESSION = "/session"
   val NEW_SESSION = SESSION + "/new"
 
-  val TOPIC = "topic/"
+  val TOPIC = "/topic"
 }

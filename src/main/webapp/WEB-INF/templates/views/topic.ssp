@@ -1,0 +1,13 @@
+#import(com.home.firstapp.Routes._)
+<%@ val topic: com.home.firstapp.forum.domain.PostedTopic %>
+<div class="panel panel-default">
+    <div class="panel-heading">${topic.topic}</div>
+    <div class="panel-body">
+        ${topic.text}
+    </div>
+    #for(post <- topic.replies)
+    <div class="panel-body">
+        ${post.text}
+    </div>
+    #end
+</div>

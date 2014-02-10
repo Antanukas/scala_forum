@@ -10,20 +10,33 @@ import com.home.firstapp.forum.dao.TopicRepository
 object Forum {
   val topicRepository = TopicRepository()
 
-  def createTopic(username: String, topic: String, text: String) = {
-    topicRepository.addTopic(Topic(username, topic, text, DateTime.now, List()))
+  def createTopic(username: String, topic: String, text: String) =
+    topicRepository.persist(new Topic(username, topic, text))
+
+
+  def reply(username: String, id: Long, text: String) {
+    //todo persist actually
+    val reply = new PostedTopicReply(1, username, text, DateTime.now)
+    val topic = topicRepository.find(id)
+    val updatedTopic = new PostedTopic(topic.id, topic.username, topic.topic, topic.text, topic.postDate, reply :: topic.replies)
+    topicRepository.update(updatedTopic)
   }
 
-  def topics = topicRepository.allTopics
+  def topics = topicRepository.findAll
 
 }
 
-abstract class Post {
-  val username: String
-  val text: String
-  val postDate: DateTime
-}
+class TopicReply(val username: String, val text: String)
+class PostedTopicReply(val id: Long, username: String, text: String, val postDate: DateTime) extends TopicReply(username, text)
 
-case class TopicPost(id: Long, username: String, text: String, postDate: DateTime) extends Post
-case class Topic(username: String, topic: String, text: String, postDate: DateTime, posts: List[TopicPost]) extends Post
-case class SavedTopic(override val username: String) extends Topic(username, topic)
+class Topic(val username: String, val topic: String, val text: String)
+class PostedTopic(val id: Long, username: String, topic: String, text: String, val postDate: DateTime, val replies: List[PostedTopicReply]) extends Topic(username, topic, text) {
+
+  override def hashCode(): Int = 31 * id.toInt
+  override def equals(obj: Any) = {
+    obj match {
+      case topic: PostedTopic if topic != null => this.id == topic.id
+      case _ => false
+    }
+  }
+}
