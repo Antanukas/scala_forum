@@ -25,11 +25,15 @@ object ScalaForumBuild extends Build {
         "org.scalatra" %% "scalatra" % ScalatraVersion,
         "org.scalatra" %% "scalatra-scalate" % ScalatraVersion,
         "org.scalatra" %% "scalatra-specs2" % ScalatraVersion % "test",
-        "org.eclipse.jetty" % "jetty-webapp" % "8.1.8.v20121106" % "container",
+        "org.scalatra" %% "scalatra-atmosphere" % ScalatraVersion,
+        "org.scalatra" %% "scalatra-json" % ScalatraVersion,
+        "org.eclipse.jetty" % "jetty-webapp" % "8.1.10.v20130312" % "container",
+        "org.eclipse.jetty" % "jetty-websocket" % "8.1.10.v20130312" % "container",
         "org.eclipse.jetty.orbit" % "javax.servlet" % "3.0.0.v201112011016" % "container;provided;test" artifacts (Artifact("javax.servlet", "jar", "jar")),
         "org.scalatra" %% "scalatra-auth" % "2.2.2",
         "ch.qos.logback" % "logback-classic" % "1.0.13" % "runtime",
-        "com.github.nscala-time" %% "nscala-time" % "0.8.0"
+        "com.github.nscala-time" %% "nscala-time" % "0.8.0",
+        "org.json4s"   %% "json4s-jackson" % "3.2.6"
 
   ),
       scalateTemplateConfig in Compile <<= (sourceDirectory in Compile){ base =>

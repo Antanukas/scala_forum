@@ -5,12 +5,14 @@ import com.home.firstapp.auth.{AuthenticationController, AuthenticationSupport}
 import org.scalatra.MethodOverride
 import com.home.firstapp.forum.domain.Forum
 import com.home.firstapp.forum.ForumController
+import com.home.firstapp.chat.ChatController
 
 class ForumServlet extends ForumAppStack
                    with AuthenticationSupport
                    with MethodOverride
                    with AuthenticationController
-                   with ForumController {
+                   with ForumController
+                   with ChatController {
 
   get(HOME) {
     val postedId = Forum.createTopic(user.username, "Test topic 1", "Test content 1").id
