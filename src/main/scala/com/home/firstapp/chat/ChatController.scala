@@ -10,6 +10,7 @@ import scala.Some
 import scala.concurrent.ExecutionContext
 import ExecutionContext.Implicits.global
 import org.json4s.{Formats, DefaultFormats}
+import com.home.firstapp.Routes._;
 
 /**
  *
@@ -22,19 +23,20 @@ with AtmosphereSupport {
 
   implicit protected val jsonFormats: Formats = DefaultFormats
 
-  atmosphere("/chat") {
+  atmosphere(CHAT_WS) {
     new AtmosphereClient {
-      override def receive: _root_.org.scalatra.atmosphere.AtmoReceive = {
-        case Connected => println("connected")
-        case Disconnected(disconnector, Some(error)) => println("disconnected")
+      //username can be retrieved only on initial websocket connection
+      val username = user.username;
+      override def receive = {
+        case Connected =>
+        case Disconnected(disconnector, Some(error)) =>
         case Error(Some(error)) =>
-        case TextMessage(text) => { println(s"echo: $text"); send("ECHO: " + text); }
-        case JsonMessage(json) => broadcast(json)
+        case TextMessage(text) => broadcast(s"[${username}]: $text", Everyone)
       }
     }
   }
 
-  get("/chat-page") {
+  get(CHAT) {
     contentType="text/html"
     layoutTemplate("/WEB-INF/templates/views/chat.ssp", "user" -> user)
   }

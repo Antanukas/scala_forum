@@ -10,4 +10,6 @@ object Routes {
   val NEW_SESSION = SESSION + "/new"
 
   val TOPIC = "/topic"
+  val CHAT_WS = "/chat"
+  val CHAT = "/chat-page"
 }

@@ -16,7 +16,8 @@ class PasswordStrategy(protected override val app: ScalatraBase) extends Scentry
   def authenticate()(implicit request: HttpServletRequest, response: HttpServletResponse): Option[User] = {
     val (login, password) = (app.params.get("login"), app.params.get("password"))
     (login, password) match {
-      case (Some("test"), Some("testp")) => Some(User("test"))
+      case (Some("antanukas"), Some("antanukas")) => Some(User("antanukas"))
+      case (Some("ievukas"), Some("ievukas")) => Some(User("ievukas"))
       case _ => None
     }
   }

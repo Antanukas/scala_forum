@@ -1,1 +1,10 @@
 <% attributes("script_paths") = List("js/atmosphere.js", "js/jquery.atmosphere.js", "js/chat.js") %>
+<% attributes("stylesheets_paths") = List("stylesheets/custom/chat.css") %>
+<div id="container">
+    <textarea id="chat_window" class="form-control" rows="10" disabled></textarea>
+    <div class="container chat-send">
+        <textarea rows="2" maxlength="8192" id="message" class="form-control send-input"
+                  onkeypress="send_message_if_send(event);" onkeyup="reset_message_if_send(event);"></textarea>
+        <a class="btn btn-info send" href="#" onclick="send_message();">Send</a>
+    </div>
+</div>
