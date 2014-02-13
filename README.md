@@ -1,9 +1,9 @@
-# First Scalatra App 2 #
+# Simple Forum and Chat application built for training purposes #
 
 ## Build & Run ##
 
 ```sh
-$ cd First_Scalatra_App_2
+$ cd scala_forum
 $ ./sbt
 > container:start
 > browse
