@@ -15,6 +15,28 @@
 
 .chat-window {
   overflow-y: scroll;
+  overflow-x: hidden;
+  word-wrap: break-word;
   min-height: 75%;
   max-height: 75%;
+}
+
+.chat-time {
+  display: inline;
+  color: red;
+}
+
+.chat-user {
+  display: inline;
+  margin-left: 5px;
+  color: blue;
+}
+
+.chat-message-text {
+  margin-left: 5px;
+  display: inline;
+}
+
+.chat-message {
+  display: block;
 }
