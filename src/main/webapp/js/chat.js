@@ -1,7 +1,9 @@
 var messageId = "#message",
     send_key_code = 13,
-    big_number = 4654654654;
+    big_number = 4654654654,
+    send_message;
 $(function() {
+    "use strict";
     var socket = $.atmosphere,
         subscription = {
             url: "/chat",
@@ -20,15 +22,15 @@ $(function() {
         console.log("got a message" + resp.responseBody)
     };
 
-    subSocket = socket.subscribe(subscription);
+    var subSocket = socket.subscribe(subscription);
 
     send_message = function () {
         console.log('sending message')
         var msg_elem = $(messageId);
         var msg = msg_elem.val();
         if (msg.trim() != "") {
-            $(messageId).val("");
             subSocket.push($(messageId).val());
+            $(messageId).val("");
         }
         return true;
     };
