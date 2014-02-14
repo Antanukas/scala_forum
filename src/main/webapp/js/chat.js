@@ -14,7 +14,8 @@ $(function() {
 
     subscription.onMessage = function(resp) {
         var chat = $('#chat_window');
-        chat.val(chat.val() + '\n' + resp.responseBody);
+        var json = JSON.parse(resp.responseBody)
+        chat.val(chat.val() + '\n [' + json.user + ']' + ' ' + json.message);
         console.log("got a message" + resp.responseBody)
     };
 

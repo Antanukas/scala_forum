@@ -10,8 +10,8 @@ import scala.Some
 import scala.concurrent.ExecutionContext
 import ExecutionContext.Implicits.global
 import org.json4s.{Formats, DefaultFormats}
-import com.home.firstapp.Routes._;
-
+import org.json4s.JsonDSL._
+import com.home.firstapp.Routes._
 /**
  *
  * @author Antanas Bastys <antanas.bastys@tieto.com>
@@ -31,7 +31,8 @@ with AtmosphereSupport {
         case Connected =>
         case Disconnected(disconnector, Some(error)) =>
         case Error(Some(error)) =>
-        case TextMessage(text) => broadcast(s"[${username}]: $text", Everyone)
+        case TextMessage(text) => broadcast(("user" -> username) ~ ("message" -> text), Everyone)//broadcast(s"[${username}]: $text", Everyone)
+        //case JsonMessage(content) => content
       }
     }
   }
