@@ -1,16 +1,14 @@
-var send_message = function () {};
-var messageId = "#message"
-var send_key_code = 13;
+var messageId = "#message",
+    send_key_code = 13;
 $(function() {
-    var socket = $.atmosphere;
-
-    var subscription = {
-        url: "/chat",
-        contentType: "text/plain",
-        logLevel: 'debug',
-        transport: 'websocket',
-        fallbackTransport: 'long-polling'
-    };
+    var socket = $.atmosphere,
+        subscription = {
+            url: "/chat",
+            contentType: "text/plain",
+            logLevel: 'debug',
+            transport: 'websocket',
+            fallbackTransport: 'long-polling'
+        };
 
     subscription.onMessage = function(resp) {
         var chat = $('#chat_window');
@@ -33,7 +31,7 @@ $(function() {
 
 function send_message_if_send(event) {
     if (event.keyCode == send_key_code) {
-        return send_message();
+        return send_message && send_message();
     }
 };
 
