@@ -12,3 +12,9 @@
 .send {
   margin-left: 10px;
 }
+
+.chat-window {
+  overflow-y: scroll;
+  min-height: 75%;
+  max-height: 75%;
+}

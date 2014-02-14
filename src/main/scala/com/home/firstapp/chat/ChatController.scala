@@ -17,21 +17,27 @@ import com.home.firstapp.Routes._
  * @author Antanas Bastys <antanas.bastys@tieto.com>
  */
 trait ChatController extends JValueResult
-with JacksonJsonSupport with SessionSupport
+with JacksonJsonSupport
 with AtmosphereSupport {
   self: ForumServlet =>
 
   implicit protected val jsonFormats: Formats = DefaultFormats
 
   atmosphere(CHAT_WS) {
+    println("something happening")
     new AtmosphereClient {
+      println(s"new instance ${user.username}" )
       //username can be retrieved only on initial websocket connection
       val username = user.username;
+
+
       override def receive = {
-        case Connected =>
-        case Disconnected(disconnector, Some(error)) =>
-        case Error(Some(error)) =>
-        case TextMessage(text) => broadcast(("user" -> username) ~ ("message" -> text), Everyone)//broadcast(s"[${username}]: $text", Everyone)
+        case Connected => broadcast(("user" -> "SYSTEM") ~ ("message" -> s"$username entered chat..."))
+        case Disconnected(disconnector, Some(error)) => { println("disconnecting"); broadcast(("user" -> "SYSTEM") ~ ("message" -> s"$username left chat...")) }
+        case Error(Some(error)) => error.printStackTrace
+        case TextMessage(text) => {
+          broadcast(("user" -> username) ~ ("message" -> text), Everyone)
+        }//broadcast(s"[${username}]: $text", Everyone)
         //case JsonMessage(content) => content
       }
     }

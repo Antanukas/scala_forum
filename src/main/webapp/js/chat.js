@@ -1,5 +1,6 @@
 var messageId = "#message",
-    send_key_code = 13;
+    send_key_code = 13,
+    big_number = 4654654654;
 $(function() {
     var socket = $.atmosphere,
         subscription = {
@@ -12,17 +13,21 @@ $(function() {
 
     subscription.onMessage = function(resp) {
         var chat = $('#chat_window');
+        console.log('omg messages...' + resp.responseBody)
         var json = JSON.parse(resp.responseBody)
-        chat.val(chat.val() + '\n [' + json.user + ']' + ' ' + json.message);
+        chat.append('<p>[' + json.user + ']' + ' ' + json.message + '</p>');
+        chat.scrollTop(big_number)
         console.log("got a message" + resp.responseBody)
     };
 
     subSocket = socket.subscribe(subscription);
 
     send_message = function () {
+        console.log('sending message')
         var msg_elem = $(messageId);
         var msg = msg_elem.val();
         if (msg.trim() != "") {
+            $(messageId).val("");
             subSocket.push($(messageId).val());
         }
         return true;
