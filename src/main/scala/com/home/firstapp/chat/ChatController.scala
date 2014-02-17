@@ -12,7 +12,10 @@ import org.json4s.JsonDSL._
 import com.home.firstapp.Routes._
 import com.github.nscala_time.time.Imports.DateTime
 import org.joda.time.format.ISODateTimeFormat
-import org.atmosphere.cpr.BroadcasterFactory
+import org.atmosphere.cpr.{AtmosphereResource, FrameworkConfig}
+import java.util.concurrent.atomic.AtomicInteger
+import scala.collection.mutable
+import com.home.firstapp.domain.User
 
 /**
  *
@@ -24,38 +27,41 @@ with AtmosphereSupport {
   self: ForumServlet =>
 
   implicit protected val jsonFormats: Formats = DefaultFormats
-
-
-  object System {
-
-    def notifyAboutSystemEvent(msg: OutboundMessage,to: ClientFilter, requestUri: String) = {
-      val br = BroadcasterFactory.getDefault.get(requestUri).asInstanceOf[ScalatraBroadcaster]
-      br.broadcast(msg, to)
-    }
-
-  }
+  //for chat instance counting
+  val userChats = new mutable.WeakHashMap[User, AtomicInteger] with mutable.SynchronizedMap[User, AtomicInteger]
 
   atmosphere(CHAT_WS) {
     new AtmosphereClient {
       //username can be retrieved only on initial websocket connection
-      val username = user.username
-/*      //TODO temp workaround
-      private[this] final def broadcast2(msg: OutboundMessage, to: ClientFilter = Others)(implicit executionContext: ExecutionContext) = {
-        val br = BroadcasterFactory.getDefault.get(requestUri).asInstanceOf[ScalatraBroadcaster]
-        br.broadcast(msg, to)
-      }*/
-      override def receive = {
-        //this broadcast is ain working yet because first Connected event is published and later broadcaster created.
-        //Need similar fix to https://github.com/scalatra/scalatra/commit/0b5cd743325dfceb6ca974a7085fe4631e13e890 in Scalatra.
-        //TODO after fix change broadcast2 to broadcast from scalatra
-        case Connected => System.notifyAboutSystemEvent(Message("SYSTEM", s"$username entered chat..."), Others, requestUri)
+      val user = ChatController.this.user
 
-        case Disconnected(disconnector, _) => //>< (Message("SYSTEM", s"$username left chat..."), Others)
+      override def receive = {
+        case Connected => {
+          val chatCount = getChatInstanceCount(user).incrementAndGet();
+          if (chatCount == 1) {
+            AtmosphereClient.broadcast(requestUri, Message("SYSTEM", s"${user.username} entered chat..."), Others)
+          }
+        }
+        case Disconnected(disconnector, _) => {
+          //workaround Long-polling causes endless loop on disconnect when broadcasting.
+          val chatCount = getChatInstanceCount(user).decrementAndGet();
+          if (chatCount < 1 && resolveTransportMethod == AtmosphereResource.TRANSPORT.WEBSOCKET.name) {
+            AtmosphereClient.broadcast(requestUri, Message("SYSTEM", s"${user.username} left chat..."), Others)
+          }
+        }
         case Error(Some(error)) => error.printStackTrace
-        case TextMessage(text) => {
-          broadcast(Message(username, text), Everyone)
-        }//broadcast(s"[${username}]: $text", Everyone)
-        //case JsonMessage(content) => content
+        case TextMessage(text) => broadcast(Message(user.username, text), Everyone)
+      }
+
+      def getChatInstanceCount(user: User) = userChats.getOrElseUpdate(user, new AtomicInteger(0))
+
+
+      def resolveTransportMethod: String = {
+        request.getAttribute(FrameworkConfig.TRANSPORT_IN_USE) match {
+          case null => ""
+          case transport: String => transport
+          case _ => throw new IllegalStateException(s"Could not find ${FrameworkConfig.TRANSPORT_IN_USE} attribute in session map")
+        }
       }
     }
   }

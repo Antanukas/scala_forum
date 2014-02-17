@@ -13,14 +13,15 @@ class ForumServlet extends ForumAppStack
                    with AuthenticationController
                    with ForumController
                    with ChatController {
+  val postedId = Forum.createTopic("TestUser", "Test topic 1", "Test content 1").id
+  Forum.reply("testUser", postedId, "you die")
+  Forum.reply("testUser", postedId, "you die2")
+  Forum.reply("testUser", postedId, "you die3")
+  Forum.createTopic("TestUser", "Test topic 2", "Test content 2")
+  Forum.createTopic("TestUser", "Test topic 3", "Test content 3")
 
   get(HOME) {
-    val postedId = Forum.createTopic(user.username, "Test topic 1", "Test content 1").id
-    Forum.reply("testUser", postedId, "you die")
-    Forum.reply("testUser", postedId, "you die2")
-    Forum.reply("testUser", postedId, "you die3")
-    Forum.createTopic(user.username, "Test topic 2", "Test content 2")
-    Forum.createTopic(user.username, "Test topic 3", "Test content 3")
+
     contentType="text/html"
     layoutTemplate("/WEB-INF/templates/views/home.ssp",
       "user" -> user,
