@@ -15,7 +15,7 @@ object ScalaForumBuild extends Build {
   lazy val project = Project (
     "scala-forum",
     file("."),
-    settings = Defaults.defaultSettings ++ ScalatraPlugin.scalatraWithJRebel ++ scalateSettings ++ Seq(
+    settings = seq(com.typesafe.startscript.StartScriptPlugin.startScriptForClassesSettings: _*) ++ Defaults.defaultSettings ++ ScalatraPlugin.scalatraWithJRebel ++ scalateSettings ++ Seq(
       organization := Organization,
       name := Name,
       version := Version,
@@ -27,9 +27,9 @@ object ScalaForumBuild extends Build {
         "org.scalatra" %% "scalatra-specs2" % ScalatraVersion % "test",
         "org.scalatra" %% "scalatra-atmosphere" % ScalatraVersion,
         "org.scalatra" %% "scalatra-json" % ScalatraVersion,
-        "org.eclipse.jetty" % "jetty-webapp" % "8.1.10.v20130312" % "container",
-        "org.eclipse.jetty" % "jetty-websocket" % "8.1.10.v20130312" % "container",
-        "org.eclipse.jetty.orbit" % "javax.servlet" % "3.0.0.v201112011016" % "container;provided;test" artifacts (Artifact("javax.servlet", "jar", "jar")),
+        "org.eclipse.jetty" % "jetty-webapp" % "8.1.10.v20130312" % "compile;container",
+        "org.eclipse.jetty" % "jetty-websocket" % "8.1.10.v20130312" % "compile;container",
+        "org.eclipse.jetty.orbit" % "javax.servlet" % "3.0.0.v201112011016" % "compile;container;provided;test" artifacts (Artifact("javax.servlet", "jar", "jar")),
         "org.scalatra" %% "scalatra-auth" % "2.2.2",
         "ch.qos.logback" % "logback-classic" % "1.0.13" % "runtime",
         "com.github.nscala-time" %% "nscala-time" % "0.8.0",
