@@ -11,7 +11,6 @@ class AuthFilter extends ScalatraFilter with AuthenticationSupport {
 
   get("/*") {
     val auth = isAuthenticated
-    println("filter " + auth)
     if (request.getRequestURI.startsWith("/stylesheets")
       || request.getRequestURI.startsWith("/js")
       || isAuthenticated) filterChain.doFilter(request, response)

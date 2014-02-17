@@ -16,6 +16,7 @@ import org.atmosphere.cpr.{AtmosphereResource, FrameworkConfig}
 import java.util.concurrent.atomic.AtomicInteger
 import scala.collection.mutable
 import com.home.firstapp.domain.User
+import collection.JavaConverters._
 
 /**
  *
@@ -34,18 +35,24 @@ with AtmosphereSupport {
     new AtmosphereClient {
       //username can be retrieved only on initial websocket connection
       val user = ChatController.this.user
+      val transportInUse  = request.getAttribute(FrameworkConfig.ATMOSPHERE_RESOURCE) match {
+        case resource: AtmosphereResource => resource.transport()
+        case _ => throw new IllegalStateException("Could not retrieve atmosphere resource from request")
+      }
 
       override def receive = {
         case Connected => {
           val chatCount = getChatInstanceCount(user).incrementAndGet();
+          println(s"Connecting ${user.username} $chatCount")
           if (chatCount == 1) {
             AtmosphereClient.broadcast(requestUri, Message("SYSTEM", s"${user.username} entered chat..."), Others)
           }
         }
         case Disconnected(disconnector, _) => {
-          //workaround Long-polling causes endless loop on disconnect when broadcasting.
           val chatCount = getChatInstanceCount(user).decrementAndGet();
-          if (chatCount < 1 && resolveTransportMethod == AtmosphereResource.TRANSPORT.WEBSOCKET.name) {
+          println(s"Disconnecting ${user.username} $request $chatCount $transportInUse")
+          //workaround Long-polling causes endless loop on disconnect when broadcasting.
+          if (chatCount < 1 && transportInUse == AtmosphereResource.TRANSPORT.WEBSOCKET) {
             AtmosphereClient.broadcast(requestUri, Message("SYSTEM", s"${user.username} left chat..."), Others)
           }
         }
@@ -54,15 +61,6 @@ with AtmosphereSupport {
       }
 
       def getChatInstanceCount(user: User) = userChats.getOrElseUpdate(user, new AtomicInteger(0))
-
-
-      def resolveTransportMethod: String = {
-        request.getAttribute(FrameworkConfig.TRANSPORT_IN_USE) match {
-          case null => ""
-          case transport: String => transport
-          case _ => throw new IllegalStateException(s"Could not find ${FrameworkConfig.TRANSPORT_IN_USE} attribute in session map")
-        }
-      }
     }
   }
 
