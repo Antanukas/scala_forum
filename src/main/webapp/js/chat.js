@@ -15,7 +15,12 @@ $(function() {
 
     subscription.onMessage = function(resp) {
         var chat = $('#chat_window');
-        var json = JSON.parse(resp.responseBody);
+        try {
+            var json = JSON.parse(resp.responseBody);
+        } catch (e)  {
+            console.log('This doesn\'t look like a valid JSON: ', response.responseBody);
+            return;
+        }
         var div = $('<div class="chat-message"></div>');
         div.append('    <p class="chat-time">' + json.time.split('+')[0] + '</p>');
         div.append('    <p class="chat-user">' + json.user + '</p>');
