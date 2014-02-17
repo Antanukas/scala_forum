@@ -25,24 +25,32 @@ with AtmosphereSupport {
 
   implicit protected val jsonFormats: Formats = DefaultFormats
 
+
+  object System {
+
+    def notifyAboutSystemEvent(msg: OutboundMessage,to: ClientFilter, requestUri: String) = {
+      val br = BroadcasterFactory.getDefault.get(requestUri).asInstanceOf[ScalatraBroadcaster]
+      br.broadcast(msg, to)
+    }
+
+  }
+
   atmosphere(CHAT_WS) {
     new AtmosphereClient {
       //username can be retrieved only on initial websocket connection
-      val username = user.username;
-
-      //TODO temp workaround
+      val username = user.username
+/*      //TODO temp workaround
       private[this] final def broadcast2(msg: OutboundMessage, to: ClientFilter = Others)(implicit executionContext: ExecutionContext) = {
         val br = BroadcasterFactory.getDefault.get(requestUri).asInstanceOf[ScalatraBroadcaster]
         br.broadcast(msg, to)
-      }
+      }*/
       override def receive = {
         //this broadcast is ain working yet because first Connected event is published and later broadcaster created.
         //Need similar fix to https://github.com/scalatra/scalatra/commit/0b5cd743325dfceb6ca974a7085fe4631e13e890 in Scalatra.
         //TODO after fix change broadcast2 to broadcast from scalatra
-        case Connected => {
-          broadcast2(Message("SYSTEM", s"$username entered chat..."), Everyone)
-        }
-        case Disconnected(disconnector, _) => { println("disconnecting"); broadcast(("user" -> "SYSTEM") ~ ("message" -> s"$username left chat..."), Everyone) }
+        case Connected => System.notifyAboutSystemEvent(Message("SYSTEM", s"$username entered chat..."), Others, requestUri)
+
+        case Disconnected(disconnector, _) => //>< (Message("SYSTEM", s"$username left chat..."), Others)
         case Error(Some(error)) => error.printStackTrace
         case TextMessage(text) => {
           broadcast(Message(username, text), Everyone)

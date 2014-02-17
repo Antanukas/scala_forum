@@ -14,11 +14,12 @@ $(function() {
         };
 
     subscription.onMessage = function(resp) {
+        console.log('got message' + resp.responseBody);
         var chat = $('#chat_window');
         try {
             var json = JSON.parse(resp.responseBody);
         } catch (e)  {
-            console.log('This doesn\'t look like a valid JSON: ', response.responseBody);
+            console.log('This doesn\'t look like a valid JSON: ', resp.responseBody);
             return;
         }
         var div = $('<div class="chat-message"></div>');
@@ -32,9 +33,10 @@ $(function() {
     var subSocket = socket.subscribe(subscription);
 
     send_message = function () {
+        console.log('sending msg');
         var msg_elem = $(messageId);
         var msg = msg_elem.val();
-        if (msg.trim() != "") {
+        if ($.trim(msg) != "") {
             subSocket.push($(messageId).val());
             $(messageId).val("");
         }
