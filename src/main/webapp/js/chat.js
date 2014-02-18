@@ -24,7 +24,7 @@ $(function() {
         var div = $('<div class="chat-message"></div>');
         div.append('    <p class="chat-time">' + json.time.split('+')[0] + '</p>');
         div.append('    <p class="chat-user">' + json.user + '</p>');
-        div.append('    <p class="chat-message-text">' + json.message + '</p>');
+        div.append('    <p class="chat-message-text">' + escape_with_emoticons(json.message) + '</p>');
         chat.append(div);
         chat.scrollTop(big_number)
     };
@@ -35,8 +35,8 @@ $(function() {
         var msg_elem = $(messageId);
         var msg = msg_elem.val();
         if (msg.trim() != "") {
-            subSocket.push($(messageId).val());
-            $(messageId).val("");
+            subSocket.push(msg);
+            msg_elem.val("");
         }
         return true;
     };
