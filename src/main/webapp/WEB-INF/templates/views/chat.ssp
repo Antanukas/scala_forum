@@ -1,9 +1,59 @@
-<% attributes("script_paths") = List("js/atmosphere.js", "js/jquery.atmosphere.js", "js/chat.js") %>
+<%@ val popularEmoticons: List[String] = List(":)", ":D") %>
+<% attributes("script_paths") = List("js/atmosphere.js", "js/jquery.atmosphere.js", "js/emoticons.js", "js/chat.js") %>
 <% attributes("stylesheets_paths") = List("stylesheets/custom/chat.css") %>
 <div id="container">
     <!--<textarea id="chat_window" class="form-control" rows="10" disabled></textarea>-->
     <div class="panel panel-default">
         <div id="chat_window" class="panel-body chat-window"></div>
+        <div class="panel-footer">
+        <!-- TODO maybe this should be implemented using JS -->
+        #for ((emoticon, i) <- popularEmoticons.zipWithIndex)
+          <img id="emo_${i}" alt="${emoticon}" onclick="appendEmoticon('${emoticon}')"/>
+        #end
+          <div class="btn-group">
+            <button class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown">
+                More <span class="caret"></span>
+            </button>
+            <ul id="allEmoticons" class="dropdown-menu" role="menu"></ul>
+          </div>
+        </div>
+        <script>
+            insertPopularEmoticonImages();
+            collectAllEmoticons();
+
+            function insertPopularEmoticonImages() {
+                $("img[id^='emo_']").each(function(index, elem) {
+                    var emoticon = $(elem).attr("alt");
+                    $(elem).attr("src", emoticon_for(emoticon));
+                });
+            }
+
+            function appendEmoticon(emoticon) {
+                $(messageId).val(function(index, currentValue) { return currentValue + emoticon});
+            }
+
+            /*
+             * Inserts <img> tags with emoticons into #allEmoticons element
+             */
+            function collectAllEmoticons() {
+                var createImgTag = function (emoticon, emoticon_path) {
+                    return '<img class="emoticon" '
+                        + 'src="' + emoticon_path + '" '
+                        + 'alt="' + emoticon + '" '
+                        + 'onclick="appendEmoticon(\'' + emoticon + '\')"/>';
+                }
+                //tune this to have more emoticons per line
+                var mappings = get_all_mappings_by_path();
+                var keys = Object.keys(mappings);
+                var listElem = $('<li></li>');
+                keys.forEach(function(emoticon_path) {
+                    console.log("Appending element" + emoticon_path);
+                    var emoticon = mappings[emoticon_path];
+                    listElem.append(createImgTag(emoticon, emoticon_path));
+                });
+                $('#allEmoticons').append(listElem);
+            }
+        </script>
     </div>
     <div class="container chat-send">
         <textarea rows="2" maxlength="8192" id="message" class="form-control send-input"

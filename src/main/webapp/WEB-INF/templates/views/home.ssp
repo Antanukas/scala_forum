@@ -1,5 +1,5 @@
 #import(com.home.firstapp.Routes._)
-<%@ val threads: scala.collection.immutable.List[com.home.firstapp.forum.domain.PostedTopic] %>
+<%@ val threads: List[com.home.firstapp.forum.domain.PostedTopic] %>
 <p>Homepage</p>
 <div class="container">
     <table class="table table-condensed">
