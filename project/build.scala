@@ -33,7 +33,6 @@ object ScalaForumBuild extends Build {
         "org.eclipse.jetty" % "jetty-websocket" % "8.1.14.v20131031" % "compile;container",
         "org.eclipse.jetty.orbit" % "javax.servlet" % "3.0.0.v201112011016" % "compile;container;provided;test" artifacts (Artifact("javax.servlet", "jar", "jar")),
         "org.scalatra" %% "scalatra-auth" % "2.2.2",
-        "ch.qos.logback" % "logback-classic" % "1.0.13" % "runtime",
         "com.github.nscala-time" %% "nscala-time" % "0.8.0",
         "org.json4s"   %% "json4s-jackson" % "3.2.6"
 

@@ -1,5 +1,5 @@
 <%@ val popularEmoticons: List[String] = List(":)", ":D") %>
-<% attributes("script_paths") = List("js/atmosphere.js", "js/jquery.atmosphere.js", "js/emoticons.js", "js/chat.js") %>
+<% attributes("script_paths") = List("js/jquery.atmosphere-2.1.4.js", "js/emoticons.js", "js/chat.js") %>
 <% attributes("stylesheets_paths") = List("stylesheets/custom/chat.css") %>
 <div id="container">
     <!--<textarea id="chat_window" class="form-control" rows="10" disabled></textarea>-->

@@ -17,6 +17,7 @@ import java.util.concurrent.atomic.AtomicInteger
 import scala.collection.mutable
 import com.home.firstapp.domain.User
 import collection.JavaConverters._
+import grizzled.slf4j.Logger
 
 /**
  *
@@ -26,6 +27,7 @@ trait ChatController extends JValueResult
 with JacksonJsonSupport
 with AtmosphereSupport {
   self: ForumServlet =>
+  private lazy val log = Logger[this.type]
 
   implicit protected val jsonFormats: Formats = DefaultFormats
   //for chat instance counting
@@ -43,14 +45,14 @@ with AtmosphereSupport {
       override def receive = {
         case Connected => {
           val chatCount = getChatInstanceCount(user).incrementAndGet();
-          println(s"Connecting ${user.username} $chatCount")
+          log.debug(s"Connecting ${user.username} $chatCount")
           if (chatCount == 1) {
             AtmosphereClient.broadcast(requestUri, Message("SYSTEM", s"${user.username} entered chat..."), Others)
           }
         }
         case Disconnected(disconnector, _) => {
           val chatCount = getChatInstanceCount(user).decrementAndGet();
-          println(s"Disconnecting ${user.username} $request $chatCount $transportInUse")
+          log.debug(s"Disconnecting ${user.username} $request $chatCount $transportInUse")
           //workaround Long-polling causes endless loop on disconnect when broadcasting.
           if (chatCount < 1 && transportInUse == AtmosphereResource.TRANSPORT.WEBSOCKET) {
             AtmosphereClient.broadcast(requestUri, Message("SYSTEM", s"${user.username} left chat..."), Others)
