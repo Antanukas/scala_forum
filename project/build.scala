@@ -10,7 +10,7 @@ object ScalaForumBuild extends Build {
   val Name = "Scala Forum"
   val Version = "0.1.0-SNAPSHOT"
   val ScalaVersion = "2.10.3"
-  val ScalatraVersion = "2.2.2"
+  val ScalatraVersion = "2.3.0-SNAPSHOT"
 
   lazy val project = Project (
     "scala-forum",
@@ -20,6 +20,8 @@ object ScalaForumBuild extends Build {
       name := Name,
       version := Version,
       scalaVersion := ScalaVersion,
+      //resolvers +=  "Local Maven Repository" at "file://"+Path.userHome.absolutePath+"/.m2/repository",
+      resolvers += "Sonatype Nexus Snapshots" at "https://oss.sonatype.org/content/repositories/snapshots", //scalatra dev version
       resolvers += Classpaths.typesafeReleases,
       libraryDependencies ++= Seq(
         "org.scalatra" %% "scalatra" % ScalatraVersion,
@@ -27,8 +29,8 @@ object ScalaForumBuild extends Build {
         "org.scalatra" %% "scalatra-specs2" % ScalatraVersion % "test",
         "org.scalatra" %% "scalatra-atmosphere" % ScalatraVersion,
         "org.scalatra" %% "scalatra-json" % ScalatraVersion,
-        "org.eclipse.jetty" % "jetty-webapp" % "8.1.10.v20130312" % "compile;container",
-        "org.eclipse.jetty" % "jetty-websocket" % "8.1.10.v20130312" % "compile;container",
+        "org.eclipse.jetty" % "jetty-webapp" % "8.1.14.v20131031" % "compile;container",
+        "org.eclipse.jetty" % "jetty-websocket" % "8.1.14.v20131031" % "compile;container",
         "org.eclipse.jetty.orbit" % "javax.servlet" % "3.0.0.v201112011016" % "compile;container;provided;test" artifacts (Artifact("javax.servlet", "jar", "jar")),
         "org.scalatra" %% "scalatra-auth" % "2.2.2",
         "ch.qos.logback" % "logback-classic" % "1.0.13" % "runtime",
