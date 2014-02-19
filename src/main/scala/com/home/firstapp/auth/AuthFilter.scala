@@ -10,7 +10,6 @@ import com.home.firstapp.Routes
 class AuthFilter extends ScalatraFilter with AuthenticationSupport {
 
   get("/*") {
-    val auth = isAuthenticated
     if (request.getRequestURI.startsWith("/stylesheets")
       || request.getRequestURI.startsWith("/js")
       || isAuthenticated) filterChain.doFilter(request, response)
